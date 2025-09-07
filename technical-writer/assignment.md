@@ -2,16 +2,16 @@
 
 Kubectl is a Command Line Interface (CLI) tool for interacting with Kubernetes clusters (K8s) via the Kubernetes API server. For more information on kubectl, see [Command line tool (kubectl)](https://kubernetes.io/docs/reference/kubectl/). For kubectl in Palette, see [Kubectl in the SpectroCloud docs](https://docs.spectrocloud.com/clusters/cluster-management/palette-webctl/).
 
-Kubecutl issues commands against Kubernetes clusters. Here are useful kubectl commands for debugging, in order of operation:
+Kubectl issues commands against Kubernetes clusters. Here are useful kubectl commands for debugging, in order of operation:
 
 | Command | Description | Usage |
 | ----------- | ----------- | ----------- |
-| `get pods` | Lists all available pods and their status. See [kubectl get](https://kubernetes.io/docs/reference/kubectl/generated/kubectl_get/).<br/>**Note:** Make sure to specify the `namespace`.| `kubectl get pods --NAMESPACE` |
-| `logs` | Retrieves logs of a specific pod to review logs or debug a container. See [kubectl logs](https://kubernetes.io/docs/reference/kubectl/generated/kubectl_logs/). | `kubectl logs [-f] [-p] (POD NAME) [-c CONTAINER]` |
-| `exec` | Executes a command in a container to debug a container from the inside or to explore the the enviroment of the container itself. See [kubectl exec](https://kubernetes.io/docs/reference/kubectl/generated/kubectl_exec/). | `kubectl exec (POD NAME) [-c CONTAINER] [flags] -- COMMAND [args...]` |
+| `get pods` | Lists all available pods and their status. See [kubectl get](https://kubernetes.io/docs/reference/kubectl/generated/kubectl_get/).<br/>**Note:** Make sure to specify the `namespace`.| `kubectl get pods --namespace` |
+| `logs` | Retrieves logs of a specific pod to review logs or debug a container. See [kubectl logs](https://kubernetes.io/docs/reference/kubectl/generated/kubectl_logs/).<br>**Note:** If a pod has multiple containers, you must use `-c <container>`. | `kubectl logs [-f] [-p] (POD NAME) [-c CONTAINER]` |
+| `exec` | Executes a command in a container to debug a container from the inside or to explore the the envirnoment of the container itself. See [kubectl exec](https://kubernetes.io/docs/reference/kubectl/generated/kubectl_exec/). | `kubectl exec (POD NAME) [-c CONTAINER] [flags] -- COMMAND [args...]` |
 | `debug` | Creates a clone of a pod (inactive debugging container) that does not terminate if an error is experienced inside the container. See [kubectl debug](https://kubernetes.io/docs/reference/kubectl/generated/kubectl_debug/). | `kubectl debug (POD NAME) [ -- COMMAND [args...] ]` |
 
-## Examples
+## Example Debugging Session
 
 ### get pods
 
@@ -19,10 +19,10 @@ Start by listing pods to see what is active or failing.
 
 **Command:**
 ```shell
-kubectl get pods -n my-namespace
+kubectl get pods --namespace
 ```
 
-**Reponse:**
+**Response:**
 ```shell
 NAME                               READY   STATUS             RESTARTS   AGE
 web-frontend-7d9d6f47cf-2qhts      1/1     Running            0          2d
@@ -38,10 +38,10 @@ Next, look at the logs to see why `api-backend` is failing.
 
 **Command:**
 ```shell
-kubectl logs api-backend-6899b6c87d-kqjxl -n my-namespace
+kubectl logs api-backend-6899b6c87d-kqjxl --namespace
 ```
 
-**Reponse:**
+**Response:**
 ```shell
 Error: failed to connect to database at db-postgres:5432
 Caused by: timeout after 5s
@@ -55,10 +55,10 @@ Next, open a shell inside the pod to investigate and test.
 
 **Command:**
 ```shell
-kubectl exec -it api-backend-6899b6c87d-kqjxl -n my-namespace -- /bin/sh
+kubectl exec -it api-backend-6899b6c87d-kqjxl --namespace -- /bin/sh
 ```
 
-**Reponse:**
+**Response:**
 ```shell
 # env | grep DB
 DB_HOST=db-postgres
@@ -68,18 +68,18 @@ DB_USER=admin
 Connection to db-postgres 5432 port [tcp/postgresql] succeeded!
 ```
 
-Since enviornment values are set and database connectivity works, the issue requires further investigation.
+Since environment values are set and database connectivity works, the issue requires further investigation.
 
 ### debug
 
-Finally, initiate a temporary debug container.
+Finally, if more tools are needed, initiate a temporary debug container.
 
 **Command:**
 ```shell
-kubectl debug -it api-backend-6899b6c87d-kqjxl -n my-namespace --image=busybox --target=api-backend
+kubectl debug -it api-backend-6899b6c87d-kqjxl --namespace --image=busybox --target=api-backend
 ```
 
-**Reponse:**
+**Response:**
 ```shell
 Creating debugging pod api-backend-6899b6c87d-kqjxl-debug ...
 If you don't see a command prompt, try pressing enter.
