@@ -88,10 +88,12 @@ PING db-postgres (10.244.1.20): 56 data bytes
 64 bytes from 10.244.1.20: seq=0 ttl=64 time=0.234 ms
 ```
 
-Since enviornment values are set and database connectivity works, the issue requires further investigation.
-
 ## References
 - [Command line tool (kubectl)](https://kubernetes.io/docs/reference/kubectl/)
 - [Kubectl Commands - Getting Started](https://kubernetes.io/docs/reference/generated/kubectl/kubectl-commands#-strong-getting-started-strong-)
+- [kubectl get](https://kubernetes.io/docs/reference/kubectl/generated/kubectl_get/)
+- [kubectl logs](https://kubernetes.io/docs/reference/kubectl/generated/kubectl_logs/)
+- [kubectl exec](https://kubernetes.io/docs/reference/kubectl/generated/kubectl_exec/)
+- [kubectl debug](https://kubernetes.io/docs/reference/kubectl/generated/kubectl_debug/)
 - [Kubectl in the SpectroCloud docs](https://docs.spectrocloud.com/clusters/cluster-management/palette-webctl/)
 - [What is Kubernetes](https://kubernetes.io/docs/concepts/overview/)
