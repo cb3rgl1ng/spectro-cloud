@@ -1,6 +1,6 @@
 # Debug Workloads in Kubernetes
 
-Knowing how to debug Kubernetes workloads is essential. This reference reviews key kubectl commands used for inspecting and troubleshooting pods and containers in a Kubernetes environment.
+Knowing how to debug workloads is essential for managing a Kubernetes environment. This reference reviews key kubectl commands used for inspecting and troubleshooting pods and containers.
 
 **Note:** To understand the difference between pods and containers, see [Pods](https://kubernetes.io/docs/concepts/workloads/pods/) and [Containers](https://kubernetes.io/docs/concepts/containers/).
 
@@ -8,7 +8,7 @@ Knowing how to debug Kubernetes workloads is essential. This reference reviews k
 
 Kubectl is a Command Line Interface (CLI) tool for interacting with Kubernetes clusters (K8s). Communicating with the Kubernetes API server, kubectl retrieves information, issues commands, and inspects cluster resources. 
 
-For more information on kubectl, see [Command line tool (kubectl)](https://kubernetes.io/docs/reference/kubectl/). <br/>For kubectl in Palette, see [Kubectl in the SpectroCloud docs](https://docs.spectrocloud.com/clusters/cluster-management/palette-webctl/).
+For more information on kubectl, see [Command line tool (kubectl)](https://kubernetes.io/docs/reference/kubectl/). <br/>For kubectl in Palette, see [Kubectl in the Spectro Cloud docs](https://docs.spectrocloud.com/clusters/cluster-management/palette-webctl/).
 
 Here are useful kubectl commands for troubleshooting and debugging deployed pods and containers, in order of operation:
 
@@ -19,7 +19,7 @@ Here are useful kubectl commands for troubleshooting and debugging deployed pods
 | `exec` | Executes a command in a container to debug a container from the inside or to explore the environment of the container itself | [kubectl exec](https://kubernetes.io/docs/reference/kubectl/generated/kubectl_exec/) | Not all containers include the common shells `bin/bash` or `bin/sh`. |
 | `debug` | Creates a clone of a pod (inactive debugging container) that does not terminate if an error is experienced inside the container | [kubectl debug](https://kubernetes.io/docs/reference/kubectl/generated/kubectl_debug/) | When you finish working in the debugging pod, delete it. |
 
-For more commands, see [Kubectl Commands](https://kubernetes.io/docs/reference/generated/kubectl/kubectl-commands/).
+For more information on kubectl commands, see [Kubectl Commands](https://kubernetes.io/docs/reference/generated/kubectl/kubectl-commands/).
 
 ## Example Debugging Session
 
@@ -138,5 +138,5 @@ For more information, see [kubectl debug](https://kubernetes.io/docs/reference/k
 ## References
 - [Command line tool (kubectl)](https://kubernetes.io/docs/reference/kubectl/)
 - [Kubectl Commands - Getting Started](https://kubernetes.io/docs/reference/generated/kubectl/kubectl-commands#-strong-getting-started-strong-)
-- [Kubectl in the SpectroCloud docs](https://docs.spectrocloud.com/clusters/cluster-management/palette-webctl/)
+- [Kubectl in the Spectro Cloud docs](https://docs.spectrocloud.com/clusters/cluster-management/palette-webctl/)
 - [What is Kubernetes](https://kubernetes.io/docs/concepts/overview/)
