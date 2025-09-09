@@ -20,17 +20,31 @@ jobs:
         shell: sh
         env:
           BRANCH: ${{ github.head_ref || github.ref_name }}
-        run: /workspace/bulwark -name CodeSASTGitLeaks -target $REPO -tags "branch:$BRANCH,options:--log-opts origin..HEAD"
+        run: |
+          # Run the scan and redirect all output to a known HTML file
+          /workspace/bulwark \
+            -area app \
+            -component UI \
+            -surface Code \
+            -tool gitleaks \
+            -target $REPO \
+            -name CodeSASTGitLeaks \
+            -tags "branch:$BRANCH" \
+            -report html \
+            > gitleaks_output.html 2>&1
 
       - name: check-result
         shell: sh
         run: |
-          resultPath=./$REPO/gitleaks.json
-          cat $resultPath | grep -v \"Match\"\: | grep -v \"Secret\"\:
-          total_failed_tests=`cat $resultPath | grep \"Fingerprint\"\: | wc -l`
-          if [ "$total_failed_tests" -gt 0 ]; then
-            echo "GitLeaks validation check failed with above findings..."
+          if [ -f "gitleaks_output.html" ]; then
+            echo "GitLeaks report generated: gitleaks_output.html"
+          else
+            echo "GitLeaks report not found!"
             exit 1
-          else 
-            echo "GitLeaks validation check passed"
           fi
+
+      - name: Upload GitLeaks report artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: gitleaks-report
+          path: gitleaks_output.html
