@@ -1,4 +1,4 @@
-# Debug Workloads in Kubernetes
+# Debug Workloads with Kubectl Commands
 
 Knowing how to debug workloads is essential for managing a Kubernetes environment. This reference reviews key kubectl commands used for inspecting and troubleshooting pods and containers.
 
@@ -14,10 +14,10 @@ Here are useful kubectl commands for troubleshooting and debugging deployed pods
 
 | Command | Description | Reference | Notes |
 | ----------- | ----------- | ----------- | ----------- |
-| `get pods` | Lists all available pods and their status | [kubectl get](https://kubernetes.io/docs/reference/kubectl/generated/kubectl_get/) | Make sure to specify the `namespace`. |
-| `logs` | Retrieves logs of a specific pod to review or debug a container | [kubectl logs](https://kubernetes.io/docs/reference/kubectl/generated/kubectl_logs/) | If a pod has multiple containers, use `-c <container>`. |
-| `exec` | Executes a command in a container to debug a container from the inside or to explore the environment of the container itself | [kubectl exec](https://kubernetes.io/docs/reference/kubectl/generated/kubectl_exec/) | Not all containers include the common shells `bin/bash` or `bin/sh`. |
-| `debug` | Creates a clone of a pod (inactive debugging container) that does not terminate if an error is experienced inside the container | [kubectl debug](https://kubernetes.io/docs/reference/kubectl/generated/kubectl_debug/) | When you finish working in the debugging pod, delete it. |
+| `kubectl get pods` | Lists all available pods and their status | [kubectl get](https://kubernetes.io/docs/reference/kubectl/generated/kubectl_get/) | Make sure to specify the `namespace`. |
+| `kubectl logs` | Retrieves logs of a specific pod to review or debug a container | [kubectl logs](https://kubernetes.io/docs/reference/kubectl/generated/kubectl_logs/) | If a pod has multiple containers, use `-c <container>`. |
+| `kubectl exec` | Executes a command in a container to debug from the inside or to explore the environment of the container itself | [kubectl exec](https://kubernetes.io/docs/reference/kubectl/generated/kubectl_exec/) | Not all containers include the common shells `bin/bash` or `bin/sh`. |
+| `kubectl debug` | Creates a clone of a pod (inactive debugging container) that does not terminate if an error is experienced inside the container | [kubectl debug](https://kubernetes.io/docs/reference/kubectl/generated/kubectl_debug/) | When you finish working in the debugging pod, delete it. |
 
 For more information on kubectl commands, see [Kubectl Commands](https://kubernetes.io/docs/reference/generated/kubectl/kubectl-commands/).
 
@@ -29,7 +29,7 @@ The following example workflow uses kubectl commands to investigate failing pods
 
 ### `kubectl get pods`
 
-Start by listing pods in a specified namespace to see what is active or failing.
+`kubectl get pods`lists pods in a specified namespace to see what is active or failing. This is typically the first command you'll use when debugging a Kubernetes workload.
 
 **Command:**
 ```shell
@@ -43,13 +43,13 @@ debug-demo    0/1     CrashLoopBackOff   1 (13s ago)   18s
 working-pod   1/1     Running            0             18s
 ```
 
-Inspect columns such as `STATUS`, `RESTARTS`, and `AGE` to determine if pods are crashing, pending, or running as expected. In the example, the `CrashLoopBackOff` status indicates that `debug-demo` is failing.
+The `STATUS`, `RESTARTS`, and `AGE` columns can help determine if pods are crashing, pending, or running as expected. In the example, the `CrashLoopBackOff` status indicates that `debug-demo` is failing.
 
 For more information, see [kubectl get](https://kubernetes.io/docs/reference/kubectl/generated/kubectl_get/).
 
 ### `kubectl logs`
 
-Next, look at the logs to see why `debug-demo` is failing.
+`kubectl logs` displays the logs for the identified pod. This can help reveal why `debug-demo` is failing.
 
 **Note:** As long as a terminated pod hasn't been garbage collected, you can still retrieve logs for it.
 
@@ -69,9 +69,9 @@ For more information, see [kubectl logs](https://kubernetes.io/docs/reference/ku
 
 ### `kubectl exec`
 
-Next, open a shell inside the pod to investigate and test. From here, you can inspect the container's runtime environment, check file contents, or run diagnostics.
+`kubectl exec` opens a shell *inside* a running pod to investigate and test. From here, you can inspect the runtime environment, check file contents, or run diagnostics.
 
-**IMPORTANT:** Be cautious when using this in production environments. Depending on the commands issued, `exec` can modify the container state. Always follow change management protocols.
+**IMPORTANT:** Be cautious when using this in production environments. Depending on the commands issued, `kubectl exec` can modify the container state. Always follow change management protocols.
 
 **Command:**
 ```shell
@@ -104,17 +104,17 @@ Connection to db-postgres 5432 port [tcp/postgresql] succeeded!
 # exit
 ```
 
+**Note:** Make sure to run `exit` to terminate the command.
+
 In the example, the environment values are set and database connectivity works, so the issue requires further investigation.
 
-The example runs `env` and `nc`, but `cat`, `top`, `df`, and `ps` are other useful commands under `exec`.
-
-**Note:** Make sure to run `exit` to terminate the command.
+The example runs `env` and `nc`, but `cat`, `top`, `df`, and `ps` are other useful commands under `kubectl exec`.
 
 For more information, see [kubectl exec](https://kubernetes.io/docs/reference/kubectl/generated/kubectl_exec/).
 
 ### `kubectl debug`
 
-Finally, if additional tools are needed, debug in place within a temporary container inside the pod. This temporary debugging container is often called an *ephemeral container*. This is useful when the base container image doesn't include tools like `curl`, `bash`, or `nslookup`.
+If additional tools are needed, `kubectl debug` creates a temporary container inside the pod where you can debug in place. This temporary debugging container is often called an *ephemeral container*. This is useful when the base container image doesn't include tools like `curl`, `bash`, or `nslookup`.
 
 **Command:**
 ```shell
@@ -131,9 +131,9 @@ PING db-postgres (10.244.1.20): 56 data bytes
 64 bytes from 10.244.1.20: seq=0 ttl=64 time=0.234 ms
 ```
 
-From here, you can continue your investigation. This command allows you to troubleshoot a running pod with more options and no risk of impacting the production pod.  
+Inside the temporary container, you can continue your investigation. This command allows you to troubleshoot a running pod with more options and no risk of impacting the production environment.  
 
-For more information, see [kubectl debug](https://kubernetes.io/docs/reference/kubectl/generated/kubectl_debug/) and [Debug Running Pods with Ephemeral Containers](https://kubernetes.io/docs/tasks/debug/debug-application/debug-running-pod/).
+For more information, see [kubectl debug](https://kubernetes.io/docs/reference/kubectl/generated/kubectl_debug/) and [Debug Running Pods](https://kubernetes.io/docs/tasks/debug/debug-application/debug-running-pod/).
 
 ## References
 - [Command line tool (kubectl)](https://kubernetes.io/docs/reference/kubectl/)
