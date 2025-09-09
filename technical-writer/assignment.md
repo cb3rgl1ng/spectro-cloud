@@ -8,8 +8,7 @@ Knowing how to debug Kubernetes workloads is essential. This reference reviews k
 
 Kubectl is a Command Line Interface (CLI) tool for interacting with Kubernetes clusters (K8s). Communicating with the Kubernetes API server, kubectl retrieves information, issues commands, and inspects cluster resources. 
 
-For more information on kubectl, see [Command line tool (kubectl)](https://kubernetes.io/docs/reference/kubectl/). 
-For kubectl in Palette, see [Kubectl in the SpectroCloud docs](https://docs.spectrocloud.com/clusters/cluster-management/palette-webctl/).
+For more information on kubectl, see [Command line tool (kubectl)](https://kubernetes.io/docs/reference/kubectl/). <br/>For kubectl in Palette, see [Kubectl in the SpectroCloud docs](https://docs.spectrocloud.com/clusters/cluster-management/palette-webctl/).
 
 Here are useful kubectl commands for troubleshooting and debugging deployed pods and containers, in order of operation:
 
@@ -46,9 +45,13 @@ working-pod   1/1     Running            0             18s
 
 Inspect columns such as `STATUS`, `RESTARTS`, and `AGE` to determine if pods are crashing, pending, or running as expected. In the example, the `CrashLoopBackOff` status indicates that `debug-demo` is failing.
 
+For more information, see [kubectl get](https://kubernetes.io/docs/reference/kubectl/generated/kubectl_get/).
+
 ### `kubectl logs`
 
 Next, look at the logs to see why `debug-demo` is failing.
+
+**Note:** As long as a terminated pod hasn't been garbage collected, you can still retrieve logs for it.
 
 **Command:**
 ```shell
@@ -60,20 +63,15 @@ kubectl logs debug-demo -n demo
 ERROR: Failed to connect to database at db.example.com:5432
 ```
 
-Use this command to:
-- Inspect errors during startup
-- Review crash messages
-- Debug application-level issues
-
-**Note:** If a terminated pod hasn't been garbage collected, you can still retrieve logs for it.
-
 In the example, the error indicates a database connection issue.
+
+For more information, see [kubectl logs](https://kubernetes.io/docs/reference/kubectl/generated/kubectl_logs/).
 
 ### `kubectl exec`
 
-Next, open a shell inside the pod to investigate and test. This is useful to inspect the container's runtime environment, check file contents, or run diagnostics.
+Next, open a shell inside the pod to investigate and test. From here, you can inspect the container's runtime environment, check file contents, or run diagnostics.
 
-**IMPORTANT:** Be cautious when using this in production environments. `exec` can modify the container state depending on the commands issued. Always follow change management protocols.
+**IMPORTANT:** Be cautious when using this in production environments. Depending on the commands issued, `exec` can modify the container state. Always follow change management protocols.
 
 **Command:**
 ```shell
@@ -106,9 +104,13 @@ Connection to db-postgres 5432 port [tcp/postgresql] succeeded!
 # exit
 ```
 
-Since environment values are set and database connectivity works in the example, the issue requires further investigation.
+In the example, the environment values are set and database connectivity works, so the issue requires further investigation.
 
 The example runs `env` and `nc`, but `cat`, `top`, `df`, and `ps` are other useful commands under `exec`.
+
+**Note:** Make sure to run `exit` to terminate the command.
+
+For more information, see [kubectl exec](https://kubernetes.io/docs/reference/kubectl/generated/kubectl_exec/).
 
 ### `kubectl debug`
 
@@ -129,11 +131,12 @@ PING db-postgres (10.244.1.20): 56 data bytes
 64 bytes from 10.244.1.20: seq=0 ttl=64 time=0.234 ms
 ```
 
-This command allows you to troubleshoot a running pod with more options and no risk of impacting the production pod.  
+From here, you can continue your investigation. This command allows you to troubleshoot a running pod with more options and no risk of impacting the production pod.  
+
+For more information, see [kubectl debug](https://kubernetes.io/docs/reference/kubectl/generated/kubectl_debug/) and [Debug Running Pods with Ephemeral Containers](https://kubernetes.io/docs/tasks/debug/debug-application/debug-running-pod/).
 
 ## References
 - [Command line tool (kubectl)](https://kubernetes.io/docs/reference/kubectl/)
 - [Kubectl Commands - Getting Started](https://kubernetes.io/docs/reference/generated/kubectl/kubectl-commands#-strong-getting-started-strong-)
-- [Debug Running Pods with Ephemeral Containers](https://kubernetes.io/docs/tasks/debug/debug-application/debug-running-pod/)
 - [Kubectl in the SpectroCloud docs](https://docs.spectrocloud.com/clusters/cluster-management/palette-webctl/)
 - [What is Kubernetes](https://kubernetes.io/docs/concepts/overview/)
