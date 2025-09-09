@@ -22,11 +22,13 @@ jobs:
           BRANCH: ${{ github.head_ref || github.ref_name }}
         run: |
           /workspace/bulwark \
-            -name CodeSASTGitLeaks \
+            -area app \
+            -component UI \
             -surface Code \
             -tool gitleaks \
             -target $REPO \
-            -tags "branch:$BRANCH,options:--log-opts origin..HEAD" \
+            -name CodeSASTGitLeaks \
+            -tags "branch:$BRANCH" \
             -report html
 
       - name: check-result
