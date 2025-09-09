@@ -21,6 +21,7 @@ jobs:
         env:
           BRANCH: ${{ github.head_ref || github.ref_name }}
         run: |
+          # Run the scan and redirect all output to a known HTML file
           /workspace/bulwark \
             -area app \
             -component UI \
@@ -29,15 +30,21 @@ jobs:
             -target $REPO \
             -name CodeSASTGitLeaks \
             -tags "branch:$BRANCH" \
-            -report html
+            -report html \
+            > gitleaks_output.html 2>&1
 
       - name: check-result
         shell: sh
         run: |
-          resultPath=./$REPO/gitleaks.html
-          if [ -f "$resultPath" ]; then
-            echo "GitLeaks report generated: $resultPath"
+          if [ -f "gitleaks_output.html" ]; then
+            echo "GitLeaks report generated: gitleaks_output.html"
           else
             echo "GitLeaks report not found!"
             exit 1
           fi
+
+      - name: Upload GitLeaks report artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: gitleaks-report
+          path: gitleaks_output.html
