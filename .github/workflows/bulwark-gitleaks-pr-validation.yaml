@@ -17,10 +17,10 @@ jobs:
     steps:
 
       - name: run-bulwark-gitleaks-scan
-        shell: sh
-        env:
+          shell: sh
+          env:
           BRANCH: ${{ github.head_ref || github.ref_name }}
-        run: /workspace/bulwark -name CodeSASTGitLeaks -target $REPO -tags "branch:$BRANCH,options:--log-opts origin..HEAD"
+          run: /workspace/bulwark -name CodeSASTGitLeaks -target $REPO -tags "branch:$BRANCH,options:--log-opts origin..HEAD" --report-format=json --report-path=./$REPO/gitleaks.json
 
       - name: check-result
         shell: sh
